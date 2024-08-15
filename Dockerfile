@@ -8,6 +8,7 @@ RUN set -eux; \
             curl \
             libmemcached-dev \
             libz-dev \
+            libzip-dev \
             libpq-dev \
             libjpeg-dev \
             libpng-dev \
