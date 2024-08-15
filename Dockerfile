@@ -36,6 +36,5 @@ RUN set -eux; \
     docker-php-ext-install gd; \
     php -r 'var_dump(gd_info());'
     
-RUN chmod +x *
 EXPOSE 80 443 
 CMD ["php", "-S", "0.0.0.0:80"]
