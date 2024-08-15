@@ -1,12 +1,39 @@
-FROM php:8.3-fpm-alpine3.18
+FROM php:8.3-fpm
 WORKDIR /var/www/html
-RUN apt-get update -y && apt-get install -y sendmail libpng-dev
 
-RUN apt-get update && \
-    apt-get install -y \
-        zlib1g-dev
-        
-RUN docker-php-ext-install gd zip pdo_mysql gmp ffmpeg intl ftp memcached
+RUN set -eux; \
+    apt-get update; \
+    apt-get upgrade -y; \
+    apt-get install -y --no-install-recommends \
+            curl \
+            libmemcached-dev \
+            libz-dev \
+            libpq-dev \
+            libjpeg-dev \
+            libpng-dev \
+            libfreetype6-dev \
+            libssl-dev \
+            libwebp-dev \
+            libxpm-dev \
+            libmcrypt-dev \
+            libonig-dev; \
+    rm -rf /var/lib/apt/lists/*
+
+RUN set -eux; \
+    # Install the PHP pdo_mysql extention
+    docker-php-ext-install pdo_mysql; \
+    # Install the PHP pdo_pgsql extention
+    docker-php-ext-install pdo_pgsql; \
+    # Install the PHP gd library
+    docker-php-ext-configure gd \
+            --prefix=/usr \
+            --with-jpeg \
+            --with-webp \
+            --with-xpm \
+            --with-freetype; \
+    docker-php-ext-install gd; \
+    php -r 'var_dump(gd_info());'
+    
 COPY . /var/www/html/
 RUN chmod +x *
 EXPOSE 80 443 
